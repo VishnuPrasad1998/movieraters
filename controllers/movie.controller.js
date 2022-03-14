@@ -100,3 +100,20 @@ exports.deletemovie = async (req, res) => {
                 });
         }       
     }};
+
+exports.listmovie = async (req, res) => {
+    if (!req.user) {
+        res.status(403)
+            .send({
+            message: "Unauthorized to access the endpoint"
+            });
+    } else {
+        const rating = req.query.rating;
+        var data = await Ratings.find({averageRating: rating})
+        const movieTitleArray = data.map(element => element.title);
+        var movies = await Movie.find({title: {$in: movieTitleArray}})
+        res.status(200).send({
+            result: movies,
+            message: "List fetched Successfully"
+        });
+}}
